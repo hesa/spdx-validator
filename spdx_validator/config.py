@@ -2,5 +2,4 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# spdx-validator
-Simple validator of package SBoM
+spdx_validator_version = 0.1
