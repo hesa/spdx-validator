@@ -14,6 +14,16 @@ cd spdx-validator
 pip install .
 ```
 
+# Supported SPDX versions
+
+* [2.2](https://github.com/spdx/spdx-spec/blob/development/v2.2.1/schemas/spdx-schema.json)
+
+## Supported formats
+
+* yaml
+
+* JSON
+
 # Using spdx_validator
 
 ## Basic use
