@@ -16,7 +16,7 @@ pip install .
 
 # Supported SPDX versions
 
-* [2.2](https://github.com/spdx/spdx-spec/blob/development/v2.2.1/schemas/spdx-schema.json)
+* [2.2](https://spdx.github.io/spdx-spec/) through this [JSON schema](https://github.com/spdx/spdx-spec/blob/development/v2.2.1/schemas/spdx-schema.json)
 
 ## Supported formats
 
