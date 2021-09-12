@@ -50,3 +50,9 @@ Validating spdx data : OK
 $ echo $?
 0
 ```
+
+# License
+
+The program is licensed under GPL-3.0-only
+
+The data (in the var directory) may be under other licenses.
