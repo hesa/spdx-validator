@@ -5,7 +5,7 @@
 
 
 test:
-	python3 -m unittest
+	python3 -m pytest
 
 clean:
 	-find . -name "*.pyc" -o -name "*~" | xargs rm
