@@ -19,7 +19,7 @@ class SPDXConvertor:
     def convert(self, out_format):
         if out_format.lower() == "json":
             return self.convert_json()
-        elif out_format.lower() == "yaml" or format.lower() == "yml":
+        elif out_format.lower() == "yaml" or out_format.lower() == "yml":
             return self.convert_yaml()
             
     def convert_json(self):
