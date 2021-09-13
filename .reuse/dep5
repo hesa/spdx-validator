@@ -1,0 +1,32 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: spdx-validator
+Upstream-Contact: Henrik Sandklef <hesa@sandklef.com>
+Source: https://github.com/hesa/spdx-validator
+
+Files: example-data/*
+Copyright: Henrik
+License: CC-BY-3.0
+
+Files: spdx_validator/var/*
+Copyright:  SPDX, spdx.org
+License: CC-BY-3.0
+
+Files: requirements*
+Copyright: 2021 Konrad Weihmann @priv-kweihmann, Henrik Sandklef <hesa@sandklef.com>
+License: GPL-3.0-or-later
+
+Files: .github/workflows/main.yml
+Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
+License: GPL-3.0-or-later
+
+Files: example-data/freetype.spdx.yml
+Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
+License: GPL-3.0-or-later
+
+Files: requirements*
+Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
+License: GPL-3.0-or-later
+
+Files: spdx_validator/var/spdx-schema-2.2.json
+Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
+License: GPL-3.0-or-later
