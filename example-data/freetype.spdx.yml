@@ -1,0 +1,25 @@
+SPDXID: "SPDXRef-DOCUMENT"
+spdxVersion: "SPDX-2.2"
+creationInfo:
+  created: "2021-09-13T15:38:51Z"
+  creators:
+  - "Person: Henrik Sandklef <henrik.sandklef@kdab.com>"
+  - "Organization: MBition GmbH"
+name: "freetype-2.9"
+dataLicense: "CC0-1.0"
+documentNamespace: "http://spdx.org/spdxdocs/spdx-document-freetype"
+documentDescribes:
+- "SPDXRef-Package-freetype"
+packages:
+- SPDXID: "SPDXRef-Package-freetype"
+  description: "FreeType is a freely available software library to render fonts."
+  downloadLocation: "https://download.savannah.gnu.org/releases/freetype/freetype-2.9.tar.gz"
+  copyrightText: "bla bla"
+  filesAnalyzed: true
+  homepage: "https://www.freetype.org/"
+  licenseConcluded: "FTL"
+  licenseDeclared: "FTL OR GPL-2.0-or-later"
+  licenseComments: "FTL chosen by MBition"
+  name: "freetype"
+  versionInfo: "2.9"
+  originator: "Person: David Turner, Robert Wilhelm, Werner Lemberg and FreeType contributors"
