@@ -9,6 +9,7 @@ from argparse import RawTextHelpFormatter
 import argparse
 import sys
 
+from spdx_validator.convertor import SPDXConvertor
 from spdx_validator.validator import SPDXValidator
 from spdx_validator.validator import SPDX_VERSION_2_2
 from spdx_validator.validator import SPDX_VERSIONS
@@ -61,6 +62,16 @@ def parse():
                         type=str,
                         default=SPDX_VERSION_2_2)
     
+    parser.add_argument('--convert',
+                        help='Convert a package in one format to another',
+                        action='store_true',
+                        default=False)
+    
+    parser.add_argument('--format',
+                        help='Output format',
+                        type=str,
+                        default=None)
+    
     args = parser.parse_args()
 
     return args
@@ -75,18 +86,28 @@ def main():
     # Create validator object
     # 
     validator = SPDXValidator(args.spdx_version, args.verbose)
-    
+
+
     #
     # Aaaaand your money's gone.
     # ... kidding, let's validate
     # 
     try:
-        validator.validate_file(file_name)
-        exit(0)
+        data = validator.validate_file(file_name)
     except Exception as e:
         print("Failed validating: " + file_name, file=sys.stderr)
         print(e, file=sys.stderr)
         exit(1)
+    if args.convert:
+        if args.format is None:
+            print("Can't convert file " + file_name + ". Missing format.", file=sys.stderr)
+            exit(10)
+        else:
+            convertor = SPDXConvertor(validator)
+            print(convertor.convert(args.format))
+            exit(0)
+    else:
+        exit(0)
 
 if __name__ == '__main__':
     main()
