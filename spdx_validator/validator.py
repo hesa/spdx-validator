@@ -24,6 +24,7 @@ class SPDXValidator:
 
     def __init__(self, spdx_version = SPDX_VERSION_2_2, debug = False):
         self.debug = debug
+        self.spdx_version = spdx_version
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
             
