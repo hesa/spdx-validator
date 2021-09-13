@@ -1,0 +1,36 @@
+name: Push test pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/checkout@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Build
+        run: python3 setup.py build
+      - name: Install
+        run: python3 setup.py install
+      - name: Test
+        run: |
+          python3 -m pytest
+        shell: bash
+      - name: Install additional tooling
+        run: |
+          pip3 install reuse
+      - name: Reuse check
+        run: |
+          reuse lint
+
