@@ -24,6 +24,7 @@ class SPDXValidator:
 
     def __init__(self, spdx_version = SPDX_VERSION_2_2, debug = False):
         self.debug = debug
+        self.spdx_version = spdx_version
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
             
@@ -32,18 +33,21 @@ class SPDXValidator:
 
     def validate_file(self, spdx_file):
 
-        self.verbosen("Determine file suffix: ")
-        filename, suff = os.path.splitext(spdx_file)
-        self.verbose(" OK, " + str(suff))
+        try:
+            self.verbosen("Determine file suffix: ")
+            filename, suff = os.path.splitext(spdx_file)
+            self.verbose(" OK, " + str(suff))
 
-        self.verbosen("Read data from file: ")    
-        with open(spdx_file, 'r') as f:
-            if suff.lower() == ".yaml" or suff.lower() == ".yml":
-                manifest_data = yaml.safe_load(f) 
-            elif suff.lower() == ".json":
-                manifest_data = json.load(f)
-            else:
-                raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
+            self.verbosen("Read data from file: ")
+            with open(spdx_file, 'r') as f:
+                if suff.lower() == ".yaml" or suff.lower() == ".yml":
+                    manifest_data = yaml.safe_load(f) 
+                elif suff.lower() == ".json":
+                    manifest_data = json.load(f)
+                else:
+                    raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
+        except:
+            raise SPDXValidationException("Could not open file: " + str(spdx_file))
         self.verbose("OK")
         
         return self.validate_json(manifest_data)
