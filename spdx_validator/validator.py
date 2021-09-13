@@ -24,6 +24,7 @@ class SPDXValidator:
 
     def __init__(self, spdx_version = SPDX_VERSION_2_2, debug = False):
         self.debug = debug
+        self.manifest_data = None
         self.spdx_version = spdx_version
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
@@ -31,6 +32,9 @@ class SPDXValidator:
         with open(os.path.join(SCRIPT_DIR, "var/spdx-schema-" + spdx_version + ".json"), 'r') as f:
             self.schema = json.load(f)
 
+    def data(self):
+        return self.manifest_data
+            
     def validate_file(self, spdx_file):
 
         try:
@@ -49,7 +53,7 @@ class SPDXValidator:
         except:
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
         self.verbose("OK")
-        
+
         return self.validate_json(manifest_data)
         
     def validate_json(self, json_data):
@@ -61,7 +65,9 @@ class SPDXValidator:
 
         except jsonschema.exceptions.ValidationError as exc:
             raise SPDXValidationException(exc)
-
+        self.manifest_data = json_data
+        return json_data
+        
     def err(self, msg, file=sys.stderr, end="\n"):
         print(msg, file=file, end=end)
     
