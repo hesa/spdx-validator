@@ -22,7 +22,7 @@ jobs:
       - name: Build
         run: python3 setup.py build
       - name: Install
-        run: python3 setup.py install
+        run: pip3 install .
       - name: Test
         run: |
           python3 -m pytest
