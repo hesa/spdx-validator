@@ -33,12 +33,12 @@ class SPDXValidator:
 
     def validate_file(self, spdx_file):
 
-        self.verbosen("Determine file suffix: ")
-        filename, suff = os.path.splitext(spdx_file)
-        self.verbose(" OK, " + str(suff))
-
-        self.verbosen("Read data from file: ")
         try:
+            self.verbosen("Determine file suffix: ")
+            filename, suff = os.path.splitext(spdx_file)
+            self.verbose(" OK, " + str(suff))
+
+            self.verbosen("Read data from file: ")
             with open(spdx_file, 'r') as f:
                 if suff.lower() == ".yaml" or suff.lower() == ".yml":
                     manifest_data = yaml.safe_load(f) 
