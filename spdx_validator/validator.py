@@ -61,13 +61,13 @@ class SPDXValidator:
     def err(self, msg, file=sys.stderr, end="\n"):
         print(msg, file=file, end=end)
     
-    def verbose(self, msg):
+    def verbose(self, msg, file=sys.stderr, end="\n"):
         if self.debug:
-            self.err(msg)
+            self.err(msg, file, end)
 
-    def verbosen(self, msg):
+    def verbosen(self, msg, file=sys.stderr, end="\n"):
         if self.debug:
-            self.err(msg, file=sys.stderr, end="")
+            self.err(msg, file, end)
 
     
         
