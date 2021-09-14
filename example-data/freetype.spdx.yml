@@ -4,7 +4,7 @@ creationInfo:
   created: "2021-09-13T15:38:51Z"
   creators:
   - "Person: Henrik Sandklef <henrik.sandklef@kdab.com>"
-  - "Organization: MBition GmbH"
+  - "Organization: Sandklef GNU Labs"
 name: "freetype-2.9"
 dataLicense: "CC0-1.0"
 documentNamespace: "http://spdx.org/spdxdocs/spdx-document-freetype"
