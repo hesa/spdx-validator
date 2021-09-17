@@ -33,7 +33,8 @@ class SPDXValidator:
         
         with open(schema_file, 'r') as f:
             self.schema = json.load(f)
-
+            close(f)
+            
     def data(self):
         return self.manifest_data
             
@@ -51,7 +52,10 @@ class SPDXValidator:
                 elif suff.lower() == ".json":
                     manifest_data = json.load(f)
                 else:
+                    close(f)
                     raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
+                close(f)
+
         except:
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
         self.verbose("OK")
