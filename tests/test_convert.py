@@ -16,7 +16,7 @@ class TestConvertor(unittest.TestCase):
     
     def test_yaml(self):
         validator = SPDXValidator()
-        validator.validate_file("example-data/freetype.spdx.yml")
+        validator.validate_file("../example-data/freetype.spdx.yml")
 
         convertor = SPDXConvertor(validator)
         
