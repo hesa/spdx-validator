@@ -72,6 +72,11 @@ def parse():
                         type=str,
                         default=None)
     
+    parser.add_argument('--schema-file', '-sf',
+                        help='Schema file (JSON) to use, instead of the built in',
+                        type=str,
+                        default=None)
+    
     args = parser.parse_args()
 
     return args
@@ -85,7 +90,7 @@ def main():
     #
     # Create validator object
     # 
-    validator = SPDXValidator(args.spdx_version, args.verbose)
+    validator = SPDXValidator(args.spdx_version, args.schema_file, args.verbose)
 
 
     #
