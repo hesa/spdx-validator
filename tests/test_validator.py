@@ -37,7 +37,7 @@ class TestValidator(unittest.TestCase):
     def test_validate_file(self):
 
         validator = SPDXValidator()
-        validator.validate_file("example-data/freetype.spdx.yml")
+        validator.validate_file("../example-data/freetype.spdx.yml")
 
         with self.assertRaises(SPDXValidationException):
             validator.validate_file("example-data/freetype.spdx.notexistsing")
@@ -50,9 +50,10 @@ class TestValidator(unittest.TestCase):
         import yaml
 
         validator = SPDXValidator()
-        
-        manifest_data = yaml.safe_load(open("example-data/freetype.spdx.yml"))
-        validator.validate_json(manifest_data)
+
+        with open("../example-data/freetype.spdx.yml") as f:
+            manifest_data = yaml.safe_load(f)
+            validator.validate_json(manifest_data)
 
         with self.assertRaises(SPDXValidationException):
             validator.validate_json(None)
