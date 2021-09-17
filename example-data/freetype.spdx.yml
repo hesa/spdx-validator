@@ -14,7 +14,7 @@ packages:
 - SPDXID: "SPDXRef-Package-freetype"
   description: "FreeType is a freely available software library to render fonts."
   downloadLocation: "https://download.savannah.gnu.org/releases/freetype/freetype-2.9.tar.gz"
-  copyrightText: 
+  copyrightText: "some (c)"
   filesAnalyzed: true
   homepage: "https://www.freetype.org/"
   licenseConcluded: "FTL"
