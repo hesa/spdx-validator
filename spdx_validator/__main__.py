@@ -10,6 +10,7 @@ import argparse
 import sys
 
 from spdx_validator.convertor import SPDXConvertor
+from spdx_validator.convertor import supported_formats
 from spdx_validator.validator import SPDXValidator
 from spdx_validator.validator import SPDX_VERSION_2_2
 from spdx_validator.validator import SPDX_VERSIONS
@@ -63,12 +64,17 @@ def parse():
                         default=SPDX_VERSION_2_2)
     
     parser.add_argument('--convert',
-                        help='Convert a package in one format to another',
+                        help='Convert a package in one format to another. ',
+                        action='store_true',
+                        default=False)
+    
+    parser.add_argument('--convert',
+                        help='Convert a package in one format to another. ',
                         action='store_true',
                         default=False)
     
     parser.add_argument('--format',
-                        help='Output format',
+                        help='Output format. Supported formats: ' + str(supported_formats()),
                         type=str,
                         default=None)
     
