@@ -11,7 +11,6 @@ import sys
 import yaml
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-
 DEBUG = True
 
 SPDX_VERSION_2_2 = "2.2"
@@ -22,14 +21,17 @@ class SPDXValidationException(Exception):
 
 class SPDXValidator:
 
-    def __init__(self, spdx_version = SPDX_VERSION_2_2, debug = False):
+    def __init__(self, spdx_version = SPDX_VERSION_2_2, schema_file = None, debug = False):
         self.debug = debug
         self.manifest_data = None
         self.spdx_version = spdx_version
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
-            
-        with open(os.path.join(SCRIPT_DIR, "var/spdx-schema-" + spdx_version + ".json"), 'r') as f:
+
+        if schema_file == None:
+            schema_file = os.path.join(SCRIPT_DIR, "var/spdx-schema-" + spdx_version + ".json")
+        
+        with open(schema_file, 'r') as f:
             self.schema = json.load(f)
 
     def data(self):
