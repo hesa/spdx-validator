@@ -16,7 +16,7 @@ class TestConvertor(unittest.TestCase):
     
     def test_yaml(self):
         validator = SPDXValidator()
-        validator.validate_file("../example-data/freetype.spdx.yml")
+        validator.validate_file("example-data/freetype.spdx.yml")
 
         convertor = SPDXConvertor(validator)
         
@@ -24,7 +24,7 @@ class TestConvertor(unittest.TestCase):
         with self.assertRaises(json.decoder.JSONDecodeError):
             json.loads(json_data)
         
-        json_data = convertor.convert("yml")
+        json_data = convertor.convert("yaml")
         with self.assertRaises(json.decoder.JSONDecodeError):
             json.loads(json_data)
         
