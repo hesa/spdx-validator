@@ -63,7 +63,8 @@ class SPDXValidator:
                 self.verbose("OK")
 
         except Exception as e:
-            print(str(e), file=sys.stderr)
+            if self.debug:
+                print(str(e), file=sys.stderr)
             raise SPDXValidationException("Could not validate file: " + str(spdx_file))
 
         #
