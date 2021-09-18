@@ -31,5 +31,7 @@ class TestConvertor(unittest.TestCase):
         json_data = convertor.convert("json")
         json.loads(json_data)
         
+if __name__ == '__main__':
+    unittest.main()
         
 

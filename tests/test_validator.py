@@ -61,6 +61,9 @@ class TestValidator(unittest.TestCase):
         with self.assertRaises(SPDXValidationException):
             validator.validate_json({})
 
+if __name__ == '__main__':
+    unittest.main()
+            
 
 
 
