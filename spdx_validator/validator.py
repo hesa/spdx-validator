@@ -53,7 +53,9 @@ class SPDXValidator:
                 else:
                     raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
 
-        except:
+         except Exception as e:
+             if self.debug:
+                 print(str(e), file=sys.stderr)
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
         self.verbose("OK")
 
