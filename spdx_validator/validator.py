@@ -27,12 +27,12 @@ class SPDXValidator:
         self.debug = debug
         self.spdx_version = spdx_version
         self.checked_elements = []
+        self.manifest_data = None
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
 
         if schema_file == None:
             schema_file = os.path.join(SCRIPT_DIR, "var/spdx-schema-" + spdx_version + ".json")
-        
         with open(schema_file, 'r') as f:
             self.schema = json.load(f)
 
@@ -41,10 +41,12 @@ class SPDXValidator:
         else:
             self.spdx_dirs = spdx_dirs
 
+    def data(self):
+        return self.manifest_data
             
     def validate_file(self, spdx_file, recursive = False):
         manifest_data = None
-        self.verbose("Validate file: " + spdx_file)
+        self.verbose("Validate file: " + str(spdx_file))
         try:
             self.verbosen("Determine file suffix: ")
             filename, suff = os.path.splitext(spdx_file)
@@ -64,6 +66,14 @@ class SPDXValidator:
             print(str(e), file=sys.stderr)
             raise SPDXValidationException("Could not validate file: " + str(spdx_file))
 
+        #
+        # If no manifest data in object, this must be the top one
+        # - store it
+        #
+        if self.manifest_data == None:
+            self.manifest_data = manifest_data
+
+        
         self.validate_json(manifest_data)
         if not recursive:
             return manifest_data
