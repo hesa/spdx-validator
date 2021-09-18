@@ -63,12 +63,7 @@ def parse():
                         type=str,
                         default=SPDX_VERSION_2_2)
     
-    parser.add_argument('--convert',
-                        help='Convert a package in one format to another. ',
-                        action='store_true',
-                        default=False)
-    
-    parser.add_argument('--convert',
+    parser.add_argument('--convert', 
                         help='Convert a package in one format to another. ',
                         action='store_true',
                         default=False)
@@ -83,6 +78,18 @@ def parse():
                         type=str,
                         default=None)
     
+    parser.add_argument('--recursive', '-r',
+                        help='Check validity recursively (all relations)',
+                        action='store_true',
+                        default=False)
+    
+    parser.add_argument('--spdx-dir', '-sd',
+                        dest='spdx_dirs',
+                        help='',
+                        type=str,
+                        nargs="+",
+                        default=[])
+    
     args = parser.parse_args()
 
     return args
@@ -96,7 +103,10 @@ def main():
     #
     # Create validator object
     # 
-    validator = SPDXValidator(args.spdx_version, args.schema_file, args.verbose)
+    validator = SPDXValidator(args.spdx_version,
+                              args.schema_file,
+                              args.spdx_dirs,
+                              args.verbose)
 
 
     #
@@ -104,7 +114,7 @@ def main():
     # ... kidding, let's validate
     # 
     try:
-        data = validator.validate_file(file_name)
+        data = validator.validate_file(file_name, args.recursive)
     except Exception as e:
         print("Failed validating: " + file_name, file=sys.stderr)
         print(e, file=sys.stderr)
