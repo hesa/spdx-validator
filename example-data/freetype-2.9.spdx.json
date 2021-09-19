@@ -19,7 +19,7 @@
       "externalDocumentId": "DocumentRef-libpng-1.6.35",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "TODO"
+        "checksumValue": "d8b02dac128e83f65eb47bffcb58e29efa5cf03b"
       },
       "spdxDocument": "libpng-1.6.35.spdx.yml"
     },
@@ -27,7 +27,7 @@
       "externalDocumentId": "DocumentRef-zlib-1.2.11",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "TODO"
+        "checksumValue": "c34fc36bed2b152fa48474f07c56e37214c1dcac"
       },
       "spdxDocument": "zlib-1.2.11.spdx.yml"
     }
