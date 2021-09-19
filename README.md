@@ -37,7 +37,7 @@ pip install .
 
 ## Basic use
 
-Assuming you have a SPDX file, `project.json`, you would like to validate:
+Assuming you have an SPDX file, `project.json`, you would like to validate:
 
 ```
 $ spdx-validator project.json
@@ -49,7 +49,7 @@ If you don't see any printout and the return code is `0`, the file is valid.
 
 ## Verbose printut
 
-Assuming you have a SPDX file, `project.spdx.yaml`, you would like to validate:
+Assuming you have an SPDX file, `project.spdx.yaml`, you would like to validate:
 
 ```
 $ spdx-validator example-data/project.spdx.yml --verbose
@@ -59,6 +59,20 @@ Validating spdx data : OK
 $ echo $?
 0
 ```
+
+## Recursive use
+
+As above you have an SPDX file, `project.json`, you would like to
+validate. But this time you want to check all the relationships
+recursively.
+
+```
+$ spdx-validator project.json -r
+$ echo $?
+0
+```
+
+If you don't see any printout and the return code is `0`, the file is valid.
 
 # License
 
