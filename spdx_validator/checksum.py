@@ -6,6 +6,8 @@
 
 import hashlib
 
+from spdx_validator.exception import SPDXValidationException
+
 HASH_SHA1 = "SHA1"
 HASH_SHA224 = "SHA224"
 HASH_SHA256 = "SHA256"
