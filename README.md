@@ -2,6 +2,13 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+&nbsp;
+
+[![REUSE status][1]][2]
+
+[1]: https://api.reuse.software/badge/github.com/hesa/spdx-validator
+[2]: https://api.reuse.software/info/github.com/hesa/spdx-validator
+
 # spdx-validator
 
 Simple validator of package SBoM
