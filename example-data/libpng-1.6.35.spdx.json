@@ -14,6 +14,16 @@
   "documentDescribes": [
     "SPDXRef-Package-libpng"
   ],
+  "externalDocumentRefs": [
+    {
+      "externalDocumentId": "DocumentRef-zlib-1.2.11",
+      "checksum": {
+        "algorithm": "SHA1",
+        "checksumValue": "c34fc36bed2b152fa48474f07c56e37214c1dcac"
+      },
+      "spdxDocument": "zlib-1.2.11.spdx.yml"
+    }
+  ],
   "packages": [
     {
       "SPDXID": "SPDXRef-Package-libpng-lib",
