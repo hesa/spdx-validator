@@ -62,10 +62,10 @@ class SPDXValidator:
                     raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
                 self.verbose("OK")
 
-         except Exception as e:
-             if self.debug:
-                 print(str(e), file=sys.stderr)
-            raise SPDXValidationException("Could not open file: " + str(spdx_file))
+        except Exception as e:
+            if self.debug:
+                print(str(e), file=sys.stderr)
+                raise SPDXValidationException("Could not open file: " + str(spdx_file))
 
         #
         # If no manifest data in object, this must be the top one
