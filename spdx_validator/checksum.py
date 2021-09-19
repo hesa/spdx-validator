@@ -34,7 +34,6 @@ def hash_from_file(file_name, hash_name):
         hash_fun = hashlib.md5
     else: # HASH_MD2,  HASH_MD6
         raise SPDXValidationException("Unsupported checksum format (" + str(hash_name) + ")")
-
     with open(file_name, 'rb') as f:
         f_bytes = f.read()
         #print("hash.... " + str(f_bytes))
