@@ -98,7 +98,7 @@ class SPDXValidator:
                 related_elem = relationship['relatedSpdxElement']
 
                 if elem_id in self.checked_elements:
-                    logging.debug(" * " + elem_id + " is already check, continuing")
+                    logging.debug(" * " + elem_id + " is already checked, continuing")
                     continue
 
 
