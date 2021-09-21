@@ -8,6 +8,8 @@ import os
 import sys
 import unittest
 
+from spdx_validator.format.factory import FormatFactory
+
 from spdx_validator.validator import SPDXValidator
 from spdx_validator.validator import SPDXValidationException
 
@@ -69,6 +71,33 @@ class TestValidator(unittest.TestCase):
 
         with self.assertRaises(SPDXValidationException):
             validator.validate_json({})
+
+    def test_packages_deps(self):
+        recursive = True
+        validator = SPDXValidator("2.2", None, ["example-data"])
+        validator.validate_file("example-data/freetype-2.9.spdx.json", recursive)
+
+        formatter = FormatFactory.formatter("flict")
+        deps = validator.packages_deps()
+
+        # only one package in freetype
+        self.assertEqual(len(deps), 1)
+
+        package = deps[0]        
+        self.assertTrue("package" in package)
+        self.assertTrue("dependencies" in package)
+
+        dependencies = package['dependencies']
+
+        # libpng, zlib .. so, 2
+        self.assertEqual(len(dependencies), 2)
+
+        first_name = dependencies[0]['name']
+        second_name = dependencies[1]['name']
+        self.assertTrue(first_name == "libpng" or first_name == "zlib")
+        self.assertTrue(second_name == "libpng" or second_name == "zlib")
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
