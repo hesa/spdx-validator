@@ -27,8 +27,10 @@ class SPDXValidator:
     def __init__(self, spdx_version = SPDX_VERSION_2_2, schema_file = None, spdx_dirs = [], debug = False):
         self.debug = debug
         self.spdx_version = spdx_version
-        self.checked_elements = []
+        self.checked_packages = {}
         self.manifest_data = None
+        self.all_manifests = {}
+        self.dependencies = {}
         if spdx_version not in SPDX_VERSIONS:
             raise SPDXValidationException("Unsupported SPDX version (" + str(spdx_version) + ")")
 
@@ -50,9 +52,48 @@ class SPDXValidator:
         
     def data(self):
         return self.manifest_data
-            
-    def validate_file(self, spdx_file, recursive = False):
 
+    def _dep_list(self, spdx_id, indent = ""):
+        dependencies = []
+        if spdx_id in self.dependencies:
+            #print(indent + "     " + spdx_id + "   deps: " + str(self.dependencies[spdx_id]))
+            for dep in self.dependencies[spdx_id]:
+                if dep not in dependencies:
+                    dependencies.append(dep)
+                dependencies += self._dep_list(dep.split(":")[1], indent + "   ")
+                #print(indent + "        d: " + str(dep))
+        return dependencies
+                
+        
+    def packages_deps(self):
+        packages = []
+        top_name = self.manifest_data['name']
+        for pkg in self.manifest_data['packages']:
+            pkg_spdx_id = pkg['SPDXID']
+            pkg_key = top_name + ":" + pkg_spdx_id
+            checked_pkg = self.checked_packages[pkg_key]
+            dependencies = self._dep_list(pkg_spdx_id)
+            package = {}
+            package['package'] = checked_pkg
+            package['dependencies'] = []
+            #package['name'] = pkg_key
+            #package['license'] = checked_pkg['licenseConcluded']
+            #package['dependencies'] = []
+            for dep in dependencies:
+                package['dependencies'].append(self.checked_packages[dep])
+            #    dep_map = {}
+            #    dep_map[self.checked_packages[dep]['SPDXID']] = self.checked_packages[dep]
+                #dep_map['name'] = self.checked_packages[dep]['SPDXID']
+                #dep_map['license'] = self.checked_packages[dep]['licenseConcluded']
+                #dep_map['dependencies'] = []
+            #    package['dependencies'].append(dep_map)
+            packages.append(package)
+        #print(json.dumps(packages))
+            #if pkg['SPDXID'] in self.dependencies:
+            #    print("   d: " + str(self.dependencies[pkg['SPDXID']]))
+        return packages
+    
+    def validate_file(self, spdx_file, recursive = False):
         manifest_data = None
         logging.debug("Validate file: " + str(spdx_file))
         try:
@@ -75,14 +116,18 @@ class SPDXValidator:
                 print(str(e), file=sys.stderr)
                 raise SPDXValidationException("Could not open file: " + str(spdx_file))
 
+        self.all_manifests[manifest_data['documentNamespace']] = manifest_data
+
         #
         # If no manifest data in object, this must be the top one
         # - store it
         #
         if self.manifest_data == None:
             self.manifest_data = manifest_data
+            for pkg in manifest_data['packages']:
+                elem_id = manifest_data['name'] + ":" + pkg['SPDXID'] 
+                self.checked_packages[elem_id] = pkg
 
-        
         self.validate_json(manifest_data)
         if not recursive:
             return manifest_data
@@ -90,6 +135,11 @@ class SPDXValidator:
         if 'relationships' not in manifest_data:
             return manifest_data
         
+        #
+        # Loop through the relationships in this manifest
+        # - if linked ("DYNAMIC_LINK")
+        #   validate it
+        #
         for relationship in manifest_data['relationships']:
             logging.debug("Validating relationships")
             relation_type = relationship['relationshipType']
@@ -97,8 +147,13 @@ class SPDXValidator:
                 elem_id = relationship['spdxElementId'].replace("DocumentRef-", "")
                 related_elem = relationship['relatedSpdxElement']
 
-                if elem_id in self.checked_elements:
-                    logging.debug(" * " + elem_id + " is already checked, continuing")
+                #print(" relationship: " + related_elem + "  ---uses---> "  + elem_id )
+                if related_elem not in self.dependencies:
+                    self.dependencies[related_elem] = []
+                self.dependencies[related_elem].append(elem_id)
+                    
+                if elem_id in self.checked_packages:
+                    logging.debug(" * " + elem_id + " is already check, continuing")
                     continue
 
 
@@ -132,6 +187,14 @@ class SPDXValidator:
                     print(str(manifest_data))
                     exit(1)
 
+                #print(" * rel: " + elem_id + "   " + " coming from: " + related_elem)
+
+
+                #
+                # for every doc in: "externalDocumentRefs"
+                # - check if we can find the current relationship's. If so, all fine
+                #   otherwise, raise exception
+                #
                 for doc_ref in manifest_data["externalDocumentRefs"]:
                     doc_ref_id = doc_ref['externalDocumentId'].split(":")[0].replace("DocumentRef-", "")
                     # if id in ref list is the same as the file (f)
@@ -157,19 +220,22 @@ class SPDXValidator:
                 inner_manifest = self.validate_file(f, recursive)
                 logging.debug(" * <--- " + " Validate file: " + f)
 
+
                 #
                 # Validate that inner manifest contains the reference (elem_id)
                 #
                 inner_name = inner_manifest['name']
                 inner_name_found = False
-                for inner_pkg in inner_manifest['packages']:
-                    full_ref = inner_name + ":" + inner_pkg['SPDXID'] 
+                inner_pkg = None
+                for _inner_pkg in inner_manifest['packages']:
+                    full_ref = inner_name + ":" + _inner_pkg['SPDXID'] 
                     if full_ref == elem_id:
                         inner_name_found = True
+                        inner_pkg = _inner_pkg
                 if not inner_name_found:
                     raise SPDXValidationException("Could not find: " + str(elem_id) + " in file: " + f)
-
-                self.checked_elements.append(elem_id)
+                
+                self.checked_packages[elem_id] = inner_pkg
                 
 
         return manifest_data
