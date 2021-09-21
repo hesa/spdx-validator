@@ -35,7 +35,7 @@
       "licenseConcluded": "Libpng",
       "licenseDeclared": "Libpng",
       "supplier": "Yak Shavers Corp",
-      "name": "linbpng",
+      "name": "libpng",
       "versionInfo": "1.6.35",
       "originator": "Person: Guy Eric Schalnat, Andreas Dilger, Glenn Randers-Pehrson, et al"
     },
@@ -50,7 +50,7 @@
       "licenseDeclared": "Libpng and public-domain",
       "licenseComments": "Discarding public-domain",
       "supplier": "Yak Shavers Corp",
-      "name": "linbpng",
+      "name": "libpng",
       "versionInfo": "1.6.35",
       "originator": "Person: Guy Eric Schalnat, Andreas Dilger, Glenn Randers-Pehrson, et al"
     }
