@@ -115,7 +115,9 @@ class SPDXValidator:
             if self.debug:
                 print(str(e), file=sys.stderr)
                 raise SPDXValidationException("Could not open file: " + str(spdx_file))
-
+        if manifest_data == None:
+            raise SPDXValidationException("Could not open file: " + str(spdx_file))
+    
         self.all_manifests[manifest_data['documentNamespace']] = manifest_data
 
         #
