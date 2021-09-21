@@ -32,5 +32,3 @@ class SPDXConvertor:
         return yaml.safe_dump(self.validator.data())
 
 
-def supported_formats():
-    return CONVERTOR_FORMATS

@@ -9,11 +9,13 @@ from argparse import RawTextHelpFormatter
 import argparse
 import sys
 
-from spdx_validator.convertor import SPDXConvertor
-from spdx_validator.convertor import supported_formats
+from spdx_validator.format.factory import FormatFactory
+from spdx_validator.format.factory import supported_formats
+
 from spdx_validator.validator import SPDXValidator
 from spdx_validator.validator import SPDX_VERSION_2_2
 from spdx_validator.validator import SPDX_VERSIONS
+
 
 PROGRAM_NAME = "spdx-validator"
 PROGRAM_DESCRIPTION = "spdx-validator is a Free and Open Source Software tool to validate SPDX"
@@ -68,10 +70,10 @@ def parse():
                         action='store_true',
                         default=False)
     
-    parser.add_argument('--format',
+    parser.add_argument('--format', '-f',
                         help='Output format. Supported formats: ' + str(supported_formats()),
                         type=str,
-                        default=None)
+                        default="JSON")
     
     parser.add_argument('--schema-file', '-sf',
                         help='Schema file (JSON) to use, instead of the built in',
@@ -85,11 +87,16 @@ def parse():
     
     parser.add_argument('--spdx-dir', '-sd',
                         dest='spdx_dirs',
-                        help='',
+                        help='Directories where to look for spdx files.',
                         type=str,
                         nargs="+",
                         default=[])
     
+    parser.add_argument('--print-packages', '-pp',
+                        help='After validaiton print packages (and dependencies).',
+                        action='store_true',
+                        default=False)
+        
     args = parser.parse_args()
 
     return args
@@ -113,8 +120,13 @@ def main():
     # Aaaaand your money's gone.
     # ... kidding, let's validate
     # 
+    formatter = FormatFactory.formatter(args.format)
     try:
         data = validator.validate_file(file_name, args.recursive)
+        if args.print_packages:
+            deps = validator.packages_deps()
+            formatted = formatter.format_packages(deps)
+            print(formatted)
     except Exception as e:
         print("Failed validating: " + file_name, file=sys.stderr)
         print(e, file=sys.stderr)
@@ -124,8 +136,7 @@ def main():
             print("Can't convert file " + file_name + ". Missing format.", file=sys.stderr)
             exit(10)
         else:
-            convertor = SPDXConvertor(validator)
-            print(convertor.convert(args.format))
+            print(formatter.convert(validator.data()))
             exit(0)
     else:
         exit(0)
