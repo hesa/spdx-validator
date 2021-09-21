@@ -10,7 +10,7 @@
   },
   "name": "freetype-2.9",
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/spdx-document-freetype",
+  "documentNamespace": "freetype-2.9-9089bc58-a288-418b-828a-b4e306e2e186",
   "documentDescribes": [
     "SPDXRef-Package-freetype"
   ],
@@ -19,7 +19,7 @@
       "externalDocumentId": "DocumentRef-libpng-1.6.35",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "d8b02dac128e83f65eb47bffcb58e29efa5cf03b"
+        "checksumValue": "73cf8f938461dd3bab67c5246776058283e31086"
       },
       "spdxDocument": "libpng-1.6.35.spdx.yml"
     },
@@ -27,7 +27,7 @@
       "externalDocumentId": "DocumentRef-zlib-1.2.11",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "c34fc36bed2b152fa48474f07c56e37214c1dcac"
+        "checksumValue": "8311e25014b6bf62cb1f71539f3bb182bac96724"
       },
       "spdxDocument": "zlib-1.2.11.spdx.yml"
     }

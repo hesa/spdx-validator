@@ -10,7 +10,7 @@
   },
   "name": "zlib-1.2.11",
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/spdx-document-zlib",
+  "documentNamespace": "zlib-1.2.11-22f6a44b-02ad-43da-bfff-682de90d9639",
   "documentDescribes": [
     "SPDXRef-Package-zlib"
   ],
