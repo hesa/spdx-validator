@@ -156,6 +156,7 @@ class SPDXValidator:
                     
                 if elem_id in self.checked_packages:
                     logging.debug(" * " + elem_id + " is already check, continuing")
+                    #print(" ignore: " + str(elem_id))
                     continue
 
 
