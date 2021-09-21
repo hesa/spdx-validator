@@ -10,7 +10,7 @@
   },
   "name": "libpng-1.6.35",
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/spdx-document-libpng",
+  "documentNamespace": "libpng-1.6.35-b6ce9b91-4e80-4db4-900b-d87f673bc1cb",
   "documentDescribes": [
     "SPDXRef-Package-libpng"
   ],
@@ -19,7 +19,7 @@
       "externalDocumentId": "DocumentRef-zlib-1.2.11",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "c34fc36bed2b152fa48474f07c56e37214c1dcac"
+        "checksumValue": "8311e25014b6bf62cb1f71539f3bb182bac96724"
       },
       "spdxDocument": "zlib-1.2.11.spdx.yml"
     }
@@ -32,10 +32,10 @@
       "downloadLocation": "https://sourceforge.net/projects/libpng/files/libpng16/1.6.35/libpng-1.6.35.tar.gz/download",
       "filesAnalyzed": true,
       "homepage": "http://www.libpng.org/pub/png/libpng.html",
-      "licenseConcluded": "libpng",
-      "licenseDeclared": "libpng",
+      "licenseConcluded": "Libpng",
+      "licenseDeclared": "Libpng",
       "supplier": "Yak Shavers Corp",
-      "name": "linbpng",
+      "name": "libpng",
       "versionInfo": "1.6.35",
       "originator": "Person: Guy Eric Schalnat, Andreas Dilger, Glenn Randers-Pehrson, et al"
     },
@@ -46,11 +46,11 @@
       "downloadLocation": "https://sourceforge.net/projects/libpng/files/libpng16/1.6.35/libpng-1.6.35.tar.gz/download",
       "filesAnalyzed": true,
       "homepage": "http://www.libpng.org/pub/png/libpng.html",
-      "licenseConcluded": "libpng",
-      "licenseDeclared": "libpng and public-domain",
+      "licenseConcluded": "Libpng",
+      "licenseDeclared": "Libpng and public-domain",
       "licenseComments": "Discarding public-domain",
       "supplier": "Yak Shavers Corp",
-      "name": "linbpng",
+      "name": "libpng",
       "versionInfo": "1.6.35",
       "originator": "Person: Guy Eric Schalnat, Andreas Dilger, Glenn Randers-Pehrson, et al"
     }
