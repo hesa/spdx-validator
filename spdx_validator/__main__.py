@@ -55,6 +55,12 @@ def parse():
                         help='output verbose information to stderr',
                         default=False)
 
+    parser.add_argument('-dc', '--discard-checksum',
+                        action='store_true',
+                        dest='discard_checksum',
+                        help="Do not control checksum of spdx documents.",
+                        default=False)
+
     parser.add_argument('file',
                         help='file to validate',
                         nargs='?',
@@ -122,7 +128,7 @@ def main():
     # 
     formatter = FormatFactory.formatter(args.format)
     try:
-        data = validator.validate_file(file_name, args.recursive)
+        data = validator.validate_file(file_name, args.recursive, discard_checksum = args.discard_checksum)
         if args.print_packages:
             deps = validator.packages_deps()
             formatted = formatter.format_packages(deps)
