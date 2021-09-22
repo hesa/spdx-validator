@@ -21,7 +21,7 @@
         "algorithm": "SHA1",
         "checksumValue": "8311e25014b6bf62cb1f71539f3bb182bac96724"
       },
-      "spdxDocument": "zlib-1.2.11.spdx.yml"
+      "spdxDocument": "zlib-1.2.11.spdx.json"
     }
   ],
   "packages": [

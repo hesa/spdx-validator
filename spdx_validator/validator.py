@@ -21,7 +21,6 @@ DEBUG = True
 SPDX_VERSION_2_2 = "2.2"
 SPDX_VERSIONS =[ SPDX_VERSION_2_2 ]
 
-
 class SPDXValidator:
 
     def __init__(self, spdx_version = SPDX_VERSION_2_2, schema_file = None, spdx_dirs = [], debug = False):
@@ -93,7 +92,7 @@ class SPDXValidator:
             #    print("   d: " + str(self.dependencies[pkg['SPDXID']]))
         return packages
     
-    def validate_file(self, spdx_file, recursive = False):
+    def validate_file(self, spdx_file, recursive = False, discard_checksum = False):
         manifest_data = None
         logging.debug("Validate file: " + str(spdx_file))
         try:
@@ -146,10 +145,11 @@ class SPDXValidator:
             logging.debug("Validating relationships")
             relation_type = relationship['relationshipType']
             if relation_type == 'DYNAMIC_LINK':
+                elem_id_doc_ref = relationship['spdxElementId'].split(":")[0]
                 elem_id = relationship['spdxElementId'].replace("DocumentRef-", "")
                 related_elem = relationship['relatedSpdxElement']
 
-                #print(" relationship: " + related_elem + "  ---uses---> "  + elem_id )
+                #print(" relationship: " + related_elem + "  ---uses---> "  + elem_id)
                 if related_elem not in self.dependencies:
                     self.dependencies[related_elem] = []
                 self.dependencies[related_elem].append(elem_id)
@@ -159,6 +159,10 @@ class SPDXValidator:
                     #print(" ignore: " + str(elem_id))
                     continue
 
+                spdx_doc = None
+                for doc_ref in manifest_data["externalDocumentRefs"]:
+                    if elem_id_doc_ref == doc_ref['externalDocumentId']:
+                        spdx_doc = doc_ref['spdxDocument']
 
                 #
                 # Validate that the (internal) element in the
@@ -171,8 +175,9 @@ class SPDXValidator:
                 #
                 #
                 #
-                logging.debug(" * " + "Find file for element (" + elem_id + ")")
-                f = self._find_manifest_file(elem_id)
+                logging.debug(" * " + "Find file for element (" + spdx_doc + ")")
+                if spdx_doc != None:
+                    f = self._find_manifest_file(spdx_doc)
                 logging.debug(" *   file for element found: " + f)
 
 
@@ -206,8 +211,9 @@ class SPDXValidator:
                         check_sum_algorithm = doc_ref['checksum']['algorithm']
                         check_sum = doc_ref['checksum']['checksumValue']
                         f_check_sum = hash_from_file(f, check_sum_algorithm)
-                        if f_check_sum != check_sum:
-                            raise SPDXValidationException("Checksum for " + str(f) + " (" + str(f_check_sum+ ") is not the same as in the \"externalDocumentRefs\" in " + str(spdx_file)))
+                        if not discard_checksum:
+                            if f_check_sum != check_sum:
+                                raise SPDXValidationException("Checksum for " + str(f) + " (" + str(f_check_sum+ ") is not the same as in the \"externalDocumentRefs\" in " + str(spdx_file)))
                         ext_doc_ref_found = True
                         
                 if not ext_doc_ref_found:
@@ -243,8 +249,7 @@ class SPDXValidator:
 
         return manifest_data
 
-    def _find_manifest_file(self, elem_id):
-        
+    def OBSOLETE_suggest_file(self, elem_id):
         files = []
         # loop through all dirs to find matching files
         for dir in self.spdx_dirs:
@@ -266,15 +271,30 @@ class SPDXValidator:
                 if os.path.isfile(f):
                     files.append(f)
 
+        return files
+    
+    def _find_manifest_file(self, file_name):
+        files = []
+        # loop through all dirs to find matching files
+        for dir in self.spdx_dirs:
+            # create list of potential files
+            try_files = []
+            try_files.append(os.path.join(dir, file_name))
+            # try each potential file
+            for f in try_files:
+                # if present, store it
+                if os.path.isfile(f):
+                    files.append(f)
+
         #
         # Only, one (1) file should be found, otherwise raise exception
         #
         files_cnt = len(files)
         if files_cnt == 0:
-            raise SPDXValidationException("Could not find manifest file for : " + str(elem_id))
+            raise SPDXValidationException("Could not find manifest file for : " + str(file_name))
             
         if files_cnt > 1:
-            raise SPDXValidationException("Found " + str(files_cnt) + " manifest files for : " + str(elem_id))
+            raise SPDXValidationException("Found " + str(files_cnt) + " manifest files for : " + str(file_name))
 
         return files[0]
 
