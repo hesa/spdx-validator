@@ -26,7 +26,7 @@ setuptools.setup(
     long_description_content_type = "text/markdown",
     license_files = ('LICENSE',),
     url = "https://github.com/hesa/spdx_validatorr",
-    packages = ['spdx_validator'],
+    packages = ['spdx_validator', 'spdx_validator.format'],
     entry_points = {
         "console_scripts": [
             "spdx-validator = spdx_validator.__main__:main",
