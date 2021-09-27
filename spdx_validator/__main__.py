@@ -136,6 +136,9 @@ def main():
     except Exception as e:
         print("Failed validating: " + file_name, file=sys.stderr)
         print(e, file=sys.stderr)
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
         exit(1)
     if args.convert:
         if args.format is None:
