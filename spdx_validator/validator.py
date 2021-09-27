@@ -93,6 +93,7 @@ class SPDXValidator:
         return packages
     
     def validate_file(self, spdx_file, recursive = False, discard_checksum = False):
+
         manifest_data = None
         logging.debug("Validate file: " + str(spdx_file))
         try:
@@ -175,10 +176,11 @@ class SPDXValidator:
                 #
                 #
                 #
-                logging.debug(" * " + "Find file for element (" + spdx_doc + ")")
+                logging.debug(" * " + "Find file for element (" + str(spdx_doc) + ")")
+                f = None
                 if spdx_doc != None:
                     f = self._find_manifest_file(spdx_doc)
-                logging.debug(" *   file for element found: " + f)
+                logging.debug(" *   file for element found: " + str(f))
 
 
                 #
@@ -199,23 +201,33 @@ class SPDXValidator:
 
 
                 #
-                # for every doc in: "externalDocumentRefs"
+                # for every doc in "externalDocumentRefs" 
                 # - check if we can find the current relationship's. If so, all fine
                 #   otherwise, raise exception
                 #
-                for doc_ref in manifest_data["externalDocumentRefs"]:
-                    doc_ref_id = doc_ref['externalDocumentId'].split(":")[0].replace("DocumentRef-", "")
-                    # if id in ref list is the same as the file (f)
-                    if ext_doc_ref == doc_ref_id:
-                        # then control the checksums are the same
-                        check_sum_algorithm = doc_ref['checksum']['algorithm']
-                        check_sum = doc_ref['checksum']['checksumValue']
-                        f_check_sum = hash_from_file(f, check_sum_algorithm)
-                        if not discard_checksum:
-                            if f_check_sum != check_sum:
-                                raise SPDXValidationException("Checksum for " + str(f) + " (" + str(f_check_sum+ ") is not the same as in the \"externalDocumentRefs\" in " + str(spdx_file)))
-                        ext_doc_ref_found = True
-                        
+                if "externalDocumentRefs" not in manifest_data or manifest_data["externalDocumentRefs"] == []:
+                    ext_doc_ref_found = True
+                else:
+                    for doc_ref in manifest_data["externalDocumentRefs"]:
+                        external_doc_id = doc_ref['externalDocumentId']
+                        # if not external, continue
+                        if external_doc_id.startswith("DocumentRef-"):
+                            ext_doc_ref_found = True
+                            continue
+                        else:
+                            doc_ref_id = external_doc_id.split(":")[0].replace("DocumentRef-", "")
+                            print("doc_ref_id: " + doc_ref_id)
+                            # if id in ref list is the same as the file (f)
+                            if ext_doc_ref == doc_ref_id:
+                                print("yes ..." + str(ext_doc_ref))
+                                # then control the checksums are the same
+                                check_sum_algorithm = doc_ref['checksum']['algorithm']
+                                check_sum = doc_ref['checksum']['checksumValue']
+                                f_check_sum = hash_from_file(f, check_sum_algorithm)
+                                if not discard_checksum:
+                                    if f_check_sum != check_sum:
+                                        raise SPDXValidationException("Checksum for " + str(f) + " (" + str(f_check_sum+ ") is not the same as in the \"externalDocumentRefs\" in " + str(spdx_file)))
+                                ext_doc_ref_found = True
                 if not ext_doc_ref_found:
                     raise SPDXValidationException("Could not find " + str(ext_doc_ref) + " in \"externalDocumentRefs\" in " + str(spdx_file))
                 logging.debug(" *   checksum correct")
@@ -224,27 +236,27 @@ class SPDXValidator:
                 #
                 # Validate this file 
                 #
-                
-                logging.debug(" * ---> " + " Validate file " + f)
-                inner_manifest = self.validate_file(f, recursive)
-                logging.debug(" * <--- " + " Validate file: " + f)
+                if f != None:
+                    logging.debug(" * ---> " + " Validate file " + f)
+                    inner_manifest = self.validate_file(f, recursive, discard_checksum)
+                    logging.debug(" * <--- " + " Validate file: " + f)
 
 
-                #
-                # Validate that inner manifest contains the reference (elem_id)
-                #
-                inner_name = inner_manifest['name']
-                inner_name_found = False
-                inner_pkg = None
-                for _inner_pkg in inner_manifest['packages']:
-                    full_ref = inner_name + ":" + _inner_pkg['SPDXID'] 
-                    if full_ref == elem_id:
-                        inner_name_found = True
-                        inner_pkg = _inner_pkg
-                if not inner_name_found:
-                    raise SPDXValidationException("Could not find: " + str(elem_id) + " in file: " + f)
+                    #
+                    # Validate that inner manifest contains the reference (elem_id)
+                    #
+                    inner_name = inner_manifest['name']
+                    inner_name_found = False
+                    inner_pkg = None
+                    for _inner_pkg in inner_manifest['packages']:
+                        full_ref = inner_name + ":" + _inner_pkg['SPDXID'] 
+                        if full_ref == elem_id:
+                            inner_name_found = True
+                            inner_pkg = _inner_pkg
+                    if not inner_name_found:
+                        raise SPDXValidationException("Could not find: " + str(elem_id) + " in file: " + f)
                 
-                self.checked_packages[elem_id] = inner_pkg
+                    self.checked_packages[elem_id] = inner_pkg
                 
 
         return manifest_data
@@ -296,6 +308,7 @@ class SPDXValidator:
         if files_cnt > 1:
             raise SPDXValidationException("Found " + str(files_cnt) + " manifest files for : " + str(file_name))
 
+        logging.debug("files[0]: " + str(files[0]))
         return files[0]
 
     def _validate_related_elem(self, item, manifest_data):
