@@ -10,6 +10,7 @@ import jsonschema
 import logging
 import os
 import sys
+import spdx_license_list
 import yaml
 
 from spdx_validator.checksum import hash_from_file
@@ -19,11 +20,11 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 DEBUG = True
 
 SPDX_VERSION_2_2 = "2.2"
-SPDX_VERSIONS =[ SPDX_VERSION_2_2 ]
+SPDX_VERSIONS = [ SPDX_VERSION_2_2 ]
 
 class SPDXValidator:
 
-    def __init__(self, spdx_version = SPDX_VERSION_2_2, schema_file = None, spdx_dirs = [], debug = False):
+    def __init__(self, spdx_version = SPDX_VERSION_2_2, schema_file = None, spdx_dirs = [], debug = False, allowed_licenses = []):
         self.debug = debug
         self.spdx_version = spdx_version
         self.checked_packages = {}
@@ -46,7 +47,10 @@ class SPDXValidator:
         debug_level = logging.INFO
         if self.debug:
             debug_level = logging.DEBUG
-            
+
+        self.spdx_licenses = spdx_license_list.LICENSES
+        self.allowed_licenses = allowed_licenses
+
         logging.basicConfig(format='%(asctime)s:   %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=debug_level)
         
     def data(self):
@@ -62,8 +66,7 @@ class SPDXValidator:
                 dependencies += self._dep_list(dep.split(":")[1], indent + "   ")
                 #print(indent + "        d: " + str(dep))
         return dependencies
-                
-        
+
     def packages_deps(self):
         packages = []
         top_name = self.manifest_data['name']
@@ -119,6 +122,8 @@ class SPDXValidator:
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
     
         self.all_manifests[manifest_data['documentNamespace']] = manifest_data
+
+        self.validate_packages(manifest_data)
 
         #
         # If no manifest data in object, this must be the top one
@@ -182,7 +187,7 @@ class SPDXValidator:
                     f = self._find_manifest_file(spdx_doc)
                 logging.debug(" *   file for element found: " + str(f))
 
-
+                
                 #
                 # Validate checksum
                 #
@@ -332,4 +337,18 @@ class SPDXValidator:
             raise SPDXValidationException(exc)
 
         return True
+
+    def validate_packages(self, manifest_data):
+        for package in manifest_data['packages']:
+            # Validate concluded licenses have SPDX vlaues
+            self.check_license_spdx(package["licenseConcluded"])
+
         
+    def check_license_spdx(self, license_expression):
+        """Loop through the licenses and calidate they're in the SPDX database"""
+        for lic in license_expression.split(" "):
+            if lic == "OR" or lic == "AND"or lic == "WITH":
+                continue
+            if lic not in self.spdx_licenses:
+                if lic not in self.allowed_licenses:
+                    raise SPDXValidationException("License not SPDX or among allowed: " + str(lic))

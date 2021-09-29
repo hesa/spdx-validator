@@ -1,2 +1,3 @@
+spdx_license_list
 jsonschema
 PyYAML
