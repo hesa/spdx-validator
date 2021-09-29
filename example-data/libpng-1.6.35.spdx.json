@@ -58,7 +58,7 @@
     "relationships": [
         {
             "spdxElementId": "DocumentRef-zlib-1.2.11:SPDXRef-Package-zlib",
-            "relatedSpdxElement": "SPDXRef-Package-libpng-lib",
+            "relatedSpdxElement": "SPDXRef-Package-libpng-libpng",
             "relationshipType": "DYNAMIC_LINK"
         }
     ]
