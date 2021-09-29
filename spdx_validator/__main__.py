@@ -103,6 +103,13 @@ def parse():
                         action='store_true',
                         default=False)
         
+    parser.add_argument('--allowed-license', '-al',
+                        dest='allowed_licenses',
+                        type=str,
+                        nargs="+",
+                        help="licenses, apart from SPDX, to accept as valied",
+                        default=[])
+
     args = parser.parse_args()
 
     return args
@@ -116,10 +123,11 @@ def main():
     #
     # Create validator object
     # 
-    validator = SPDXValidator(args.spdx_version,
-                              args.schema_file,
-                              args.spdx_dirs,
-                              args.verbose)
+    validator = SPDXValidator(spdx_version = args.spdx_version,
+                              schema_file = args.schema_file,
+                              spdx_dirs = args.spdx_dirs,
+                              allowed_licenses = args.allowed_licenses,
+                              debug = args.verbose)
 
 
     #
