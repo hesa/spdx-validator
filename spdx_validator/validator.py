@@ -90,6 +90,7 @@ class SPDXValidator:
         #print(json.dumps(packages))
             #if pkg['SPDXID'] in self.dependencies:
             #    print("   d: " + str(self.dependencies[pkg['SPDXID']]))
+
         return packages
     
     def validate_file(self, spdx_file, recursive = False, discard_checksum = False):
@@ -175,10 +176,10 @@ class SPDXValidator:
                 #
                 #
                 #
-                logging.debug(" * " + "Find file for element (" + spdx_doc + ")")
+                #logging.debug(" * " + "Find file for element (" + spdx_doc + ")")
                 if spdx_doc != None:
                     f = self._find_manifest_file(spdx_doc)
-                logging.debug(" *   file for element found: " + f)
+                logging.debug(" *   file for element found: " + str(f))
 
 
                 #
@@ -226,7 +227,7 @@ class SPDXValidator:
                 #
                 
                 logging.debug(" * ---> " + " Validate file " + f)
-                inner_manifest = self.validate_file(f, recursive)
+                inner_manifest = self.validate_file(f, recursive, discard_checksum)
                 logging.debug(" * <--- " + " Validate file: " + f)
 
 
