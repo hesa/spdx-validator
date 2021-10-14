@@ -71,10 +71,10 @@ def parse():
                         type=str,
                         default=SPDX_VERSION_2_2)
     
-    parser.add_argument('--convert', 
-                        help='Convert a package in one format to another. ',
-                        action='store_true',
-                        default=False)
+    parser.add_argument('--convert', "-c",
+                        help='Convert a package to user specified format. ',
+                        type=str,
+                        default=None)
     
     parser.add_argument('--format', '-f',
                         help='Output format. Supported formats: ' + str(supported_formats()),
@@ -83,6 +83,11 @@ def parse():
     
     parser.add_argument('--schema-file', '-sf',
                         help='Schema file (JSON) to use, instead of the built in',
+                        type=str,
+                        default=None)
+    
+    parser.add_argument('--package-name', '-pn',
+                        help='Only manage the named package in the SBoM',
                         type=str,
                         default=None)
     
@@ -128,21 +133,24 @@ def main():
     # 
     formatter = FormatFactory.formatter(args.format)
     try:
-        data = validator.validate_file(file_name, args.recursive, discard_checksum = args.discard_checksum)
+        data = validator.validate_file(file_name, recursive = args.recursive, discard_checksum = args.discard_checksum)
         if args.print_packages:
             deps = validator.packages_deps()
-            formatted = formatter.format_packages(deps)
+            formatted = formatter.format_packages(data, deps, args.package_name)
             print(formatted)
     except Exception as e:
+        if args.verbose:
+            import traceback
+            print(traceback.format_exc())
         print("Failed validating: " + file_name, file=sys.stderr)
         print(e, file=sys.stderr)
         exit(1)
-    if args.convert:
+    if args.convert == None:
         if args.format is None:
             print("Can't convert file " + file_name + ". Missing format.", file=sys.stderr)
             exit(10)
         else:
-            print(formatter.convert(validator.data()))
+            #print(formatter.convert(validator.data(), args.package_name))
             exit(0)
     else:
         exit(0)
