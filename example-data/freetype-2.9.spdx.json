@@ -19,7 +19,7 @@
       "externalDocumentId": "DocumentRef-libpng-1.6.35",
       "checksum": {
         "algorithm": "SHA1",
-        "checksumValue": "d1c455724ca32376858ea8b190381fac2c605067"
+        "checksumValue": "7b5e6cd5d01824dd117238a42afc7fc55fba4e1b"
       },
       "spdxDocument": "libpng-1.6.35.spdx.json"
     },
