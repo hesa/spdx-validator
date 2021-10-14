@@ -6,7 +6,7 @@
 
 class FormatInterface:
 
-    def format_packages(self, packages):
+    def format_packages(self, package, packages, package_name = None):
         return "default implementation format_packages(packages)"
 
     def convert(self, data):
