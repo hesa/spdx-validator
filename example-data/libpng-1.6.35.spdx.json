@@ -50,7 +50,7 @@
       "licenseDeclared": "Libpng and public-domain",
       "licenseComments": "Discarding public-domain",
       "supplier": "Yak Shavers Corp",
-      "name": "libpng",
+      "name": "libpng-tools",
       "versionInfo": "1.6.35",
       "originator": "Person: Guy Eric Schalnat, Andreas Dilger, Glenn Randers-Pehrson, et al"
     }
