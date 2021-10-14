@@ -13,7 +13,7 @@ class JsonFormatter(FormatInterface):
     def __init__(self):
         pass
     
-    def format_packages(self, packages):
+    def format_packages(self, packages, package_name = None):
         return json.dumps(packages)
 
     def convert(self, data):
