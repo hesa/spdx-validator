@@ -351,4 +351,4 @@ class SPDXValidator:
                 continue
             if lic not in self.spdx_licenses:
                 if lic not in self.allowed_licenses:
-                    raise SPDXValidationException("License not SPDX or among allowed: " + str(lic))
+                    raise SPDXValidationException("License \"" + str(lic) + "\" not SPDX or among allowed licenses: " + str(self.allowed_licenses))
