@@ -115,6 +115,11 @@ def parse():
                         help="licenses, apart from SPDX, to accept as valied",
                         default=[])
 
+    parser.add_argument('--list-licenses', '-ll',
+                        action='store_true',
+                        help="list licenses",
+                        default=False)
+
     args = parser.parse_args()
 
     return args
@@ -123,8 +128,7 @@ def main():
 
     args = parse()    
     file_name = args.file
-    
-    
+
     #
     # Create validator object
     # 
@@ -134,6 +138,11 @@ def main():
                               allowed_licenses = args.allowed_licenses,
                               debug = args.verbose)
 
+    if args.list_licenses:
+        for lic in validator.licenses():
+            print(lic)
+        sys.exit(0)
+    
 
     #
     # Aaaaand your money's gone.
