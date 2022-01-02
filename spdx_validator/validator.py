@@ -363,7 +363,4 @@ class SPDXValidator:
                     raise SPDXValidationException("License \"" + str(lic) + "\" not SPDX or among allowed licenses: " + str(self.allowed_licenses))
 
     def licenses(self):
-        licenses = []
-        for lic in spdx_license_list.LICENSES:
-            licenses.append(lic)
-        return licenses
+        return spdx_license_list.LICENSES
