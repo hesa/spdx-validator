@@ -115,12 +115,21 @@ class SPDXValidator:
                     raise SPDXValidationException("Unsupported file type: " + str(spdx_file))
                 logging.debug(" data read")
 
+        except json.decoder.JSONDecodeError as e:
+            if self.debug:
+                print(" --- Original exception ---", file=sys.stderr)
+                print(str(e), file=sys.stderr)
+                print(" ------------------------", file=sys.stderr)
+            raise SPDXValidationException("File not in correct JSON format: " + str(spdx_file))
         except Exception as e:
             if self.debug:
+                print(" --- Original exception ---", file=sys.stderr)
                 print(str(e), file=sys.stderr)
-                raise SPDXValidationException("Could not open file: " + str(spdx_file))
-        if manifest_data == None:
+                print(" ------------------------", file=sys.stderr)
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
+
+        if manifest_data == None:
+            raise SPDXValidationException("Could not read file: " + str(spdx_file))
     
         self.all_manifests[manifest_data['documentNamespace']] = manifest_data
 
