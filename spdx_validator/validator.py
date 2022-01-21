@@ -21,6 +21,7 @@ DEBUG = True
 
 SPDX_VERSION_2_2 = "2.2"
 SPDX_VERSIONS = [ SPDX_VERSION_2_2 ]
+IGNORE_LICENSE_TOKENS = [ "OR", "AND", "WITH", "(", ")", "" ]
 
 class SPDXValidator:
 
@@ -355,12 +356,18 @@ class SPDXValidator:
         
     def check_license_spdx(self, license_expression):
         """Loop through the licenses and calidate they're in the SPDX database"""
-        for lic in license_expression.split(" "):
-            if lic == "OR" or lic == "AND"or lic == "WITH":
-                continue
-            if lic not in self.spdx_licenses:
-                if lic not in self.allowed_licenses:
-                    raise SPDXValidationException("License \"" + str(lic) + "\" not SPDX or among allowed licenses: " + str(self.allowed_licenses))
 
+        
+        for lic in license_expression.replace("("," ( ").replace(")"," ) ").split(" "):
+            if lic.strip() in IGNORE_LICENSE_TOKENS:
+                continue
+            if lic not in self.spdx_licenses.keys():
+                lic_found = False
+                for lic_map in self.allowed_licenses:
+                    if lic_map['key'] == lic:
+                        lic_found = True
+                if not lic_found:
+                    raise SPDXValidationException("License \"" + str(lic) + "\" not SPDX or among allowed licenses: " + str(self.allowed_licenses))
+                                                                                              
     def licenses(self):
         return spdx_license_list.LICENSES
