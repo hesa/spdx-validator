@@ -9,6 +9,7 @@ import json
 import jsonschema
 import logging
 import os
+import re
 import sys
 import spdx_license_list
 import yaml
@@ -60,12 +61,12 @@ class SPDXValidator:
     def _dep_list(self, spdx_id, indent = ""):
         dependencies = []
         if spdx_id in self.dependencies:
-            #print(indent + "     " + spdx_id + "   deps: " + str(self.dependencies[spdx_id]))
+            logging.debug(indent + "     " + spdx_id + "   deps: " + str(self.dependencies[spdx_id]))
             for dep in self.dependencies[spdx_id]:
                 if dep not in dependencies:
                     dependencies.append(dep)
                 dependencies += self._dep_list(dep.split(":")[1], indent + "   ")
-                #print(indent + "        d: " + str(dep))
+                logging.debug(indent + "        d: " + str(dep))
         return dependencies
 
     def packages_deps(self):
@@ -79,21 +80,9 @@ class SPDXValidator:
             package = {}
             package['package'] = checked_pkg
             package['dependencies'] = []
-            #package['name'] = pkg_key
-            #package['license'] = checked_pkg['licenseConcluded']
-            #package['dependencies'] = []
             for dep in dependencies:
                 package['dependencies'].append(self.checked_packages[dep])
-            #    dep_map = {}
-            #    dep_map[self.checked_packages[dep]['SPDXID']] = self.checked_packages[dep]
-                #dep_map['name'] = self.checked_packages[dep]['SPDXID']
-                #dep_map['license'] = self.checked_packages[dep]['licenseConcluded']
-                #dep_map['dependencies'] = []
-            #    package['dependencies'].append(dep_map)
             packages.append(package)
-        #print(json.dumps(packages))
-            #if pkg['SPDXID'] in self.dependencies:
-            #    print("   d: " + str(self.dependencies[pkg['SPDXID']]))
 
         return packages
     
@@ -118,15 +107,15 @@ class SPDXValidator:
 
         except json.decoder.JSONDecodeError as e:
             if self.debug:
-                print(" --- Original exception ---", file=sys.stderr)
-                print(str(e), file=sys.stderr)
-                print(" ------------------------", file=sys.stderr)
+                logging.error(" --- Original exception ---", file=sys.stderr)
+                logging.error(str(e), file=sys.stderr)
+                logging.error(" ------------------------", file=sys.stderr)
             raise SPDXValidationException("File not in correct JSON format: " + str(spdx_file))
         except Exception as e:
             if self.debug:
-                print(" --- Original exception ---", file=sys.stderr)
-                print(str(e), file=sys.stderr)
-                print(" ------------------------", file=sys.stderr)
+                logging.error(" --- Original exception ---", file=sys.stderr)
+                logging.error(str(e), file=sys.stderr)
+                logging.error(" ------------------------", file=sys.stderr)
             raise SPDXValidationException("Could not open file: " + str(spdx_file))
 
         if manifest_data == None:
@@ -159,6 +148,7 @@ class SPDXValidator:
         #   validate it
         #
         for relationship in manifest_data['relationships']:
+        
             logging.debug("Validating relationships")
             relation_type = relationship['relationshipType']
             if relation_type == 'DYNAMIC_LINK':
@@ -166,21 +156,21 @@ class SPDXValidator:
                 elem_id = relationship['spdxElementId'].replace("DocumentRef-", "")
                 related_elem = relationship['relatedSpdxElement']
 
-                #print(" relationship: " + related_elem + "  ---uses---> "  + elem_id)
+                #logging.debug(" relationship: " + related_elem + "  ---uses---> "  + elem_id)
                 if related_elem not in self.dependencies:
                     self.dependencies[related_elem] = []
                 self.dependencies[related_elem].append(elem_id)
                     
                 if elem_id in self.checked_packages:
                     logging.debug(" * " + elem_id + " is already check, continuing")
-                    #print(" ignore: " + str(elem_id))
+                    #logging.debug(" ignore: " + str(elem_id))
                     continue
 
                 spdx_doc = None
                 for doc_ref in manifest_data["externalDocumentRefs"]:
                     if elem_id_doc_ref == doc_ref['externalDocumentId']:
                         spdx_doc = doc_ref['spdxDocument']
-
+                
                 #
                 # Validate that the (internal) element in the
                 # relationship actually exists in the current SPDX
@@ -192,13 +182,11 @@ class SPDXValidator:
                 #
                 #
                 #
-                #logging.debug(" * " + "Find file for element (" + str(spdx_doc) + ")")
                 f = None
                 if spdx_doc != None:
                     f = self._find_manifest_file(spdx_doc)
                 #logging.debug(" *   file for element found: " + str(f))
 
-                
                 #
                 # Validate checksum
                 #
@@ -206,14 +194,12 @@ class SPDXValidator:
                 ext_doc_ref = elem_id.split(":")[0]
                 ext_doc_ref_found = False
                 # - find checksum in external doc refs
-                #print("manifest_data:" + str(manifest_data))
+                #logging.debug("manifest_data:" + str(manifest_data))
                 if "externalDocumentRefs" not in manifest_data:
-                    print("WHAT???? f:    " + str(f))
-                    print("WHAT???? spdx: " + str(f))
-                    print(str(manifest_data))
+                    logging.error(f"externalDocumentRefs not found in {f}")
+                    logging.errort(f"Content in file: {manifest_data}")
+                    # TODO: replace with raised exception
                     exit(1)
-
-                #print(" * rel: " + elem_id + "   " + " coming from: " + related_elem)
 
 
                 #
@@ -232,10 +218,8 @@ class SPDXValidator:
                             continue
                         else:
                             doc_ref_id = external_doc_id.split(":")[0].replace("DocumentRef-", "")
-                            print("doc_ref_id: " + doc_ref_id)
                             # if id in ref list is the same as the file (f)
                             if ext_doc_ref == doc_ref_id:
-                                print("yes ..." + str(ext_doc_ref))
                                 # then control the checksums are the same
                                 check_sum_algorithm = doc_ref['checksum']['algorithm']
                                 check_sum = doc_ref['checksum']['checksumValue']
@@ -257,11 +241,11 @@ class SPDXValidator:
                     inner_manifest = self.validate_file(f, recursive, discard_checksum)
                     logging.debug(" * <--- " + " Validate file: " + f)
 
-
                     #
                     # Validate that inner manifest contains the reference (elem_id)
                     #
-                    inner_name = inner_manifest['name']
+                    inner_name_and_version = inner_manifest['name']
+                    inner_name = re.sub("-[0-9\.-]*$", "", inner_name_and_version)
                     inner_name_found = False
                     inner_pkg = None
                     for _inner_pkg in inner_manifest['packages']:
@@ -364,7 +348,12 @@ class SPDXValidator:
             if lic not in self.spdx_licenses.keys():
                 lic_found = False
                 for lic_map in self.allowed_licenses:
-                    if lic_map['key'] == lic:
+                    if isinstance(lic_map, str):
+                        check_license = lic_map
+                    else: 
+                        check_license = lic_map['key']
+                        
+                    if check_license == lic:
                         lic_found = True
                 if not lic_found:
                     raise SPDXValidationException("License \"" + str(lic) + "\" not SPDX or among allowed licenses: " + str(self.allowed_licenses))
