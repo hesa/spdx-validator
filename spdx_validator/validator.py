@@ -148,7 +148,7 @@ class SPDXValidator:
         #   validate it
         #
         for relationship in manifest_data['relationships']:
-        
+
             logging.debug("Validating relationships")
             relation_type = relationship['relationshipType']
             if relation_type == 'DYNAMIC_LINK':
@@ -245,11 +245,12 @@ class SPDXValidator:
                     # Validate that inner manifest contains the reference (elem_id)
                     #
                     inner_name_and_version = inner_manifest['name']
-                    inner_name = re.sub("-[0-9\.-]*$", "", inner_name_and_version)
+                    inner_name = re.sub("-[0-9.-]*$", "", inner_name_and_version)
+                    
                     inner_name_found = False
                     inner_pkg = None
                     for _inner_pkg in inner_manifest['packages']:
-                        full_ref = inner_name + ":" + _inner_pkg['SPDXID'] 
+                        full_ref = inner_name_and_version + ":" + _inner_pkg['SPDXID'] 
                         if full_ref == elem_id:
                             inner_name_found = True
                             inner_pkg = _inner_pkg
