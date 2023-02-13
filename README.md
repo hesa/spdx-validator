@@ -18,7 +18,7 @@ Simple validator of package SBoM
 # Installation
 
 ```
-git https://github.com/hesa/spdx-validator.git
+git clone https://github.com/hesa/spdx-validator.git
 cd spdx-validator
 pip install .
 ```
