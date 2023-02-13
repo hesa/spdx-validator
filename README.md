@@ -76,6 +76,6 @@ If you don't see any printout and the return code is `0`, the file is valid.
 
 # License
 
-The program is licensed under GPL-3.0-only
+The program is licensed under GPL-3.0-or-later
 
 The data (in the var directory) may be under other licenses.
