@@ -5,7 +5,7 @@ Source: https://github.com/hesa/spdx-validator
 
 Files: example-data/*
 Copyright: Henrik
-License: CC-BY-3.0
+License: CC0-1.0
 
 Files: spdx_validator/var/*
 Copyright:  SPDX, spdx.org
@@ -16,10 +16,6 @@ Copyright: 2021 Konrad Weihmann @priv-kweihmann, Henrik Sandklef <hesa@sandklef.
 License: GPL-3.0-or-later
 
 Files: .github/workflows/main.yml
-Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
-License: GPL-3.0-or-later
-
-Files: example-data/freetype.spdx.yml
 Copyright: 2021 Henrik Sandklef <hesa@sandklef.com>
 License: GPL-3.0-or-later
 
